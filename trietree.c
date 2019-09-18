@@ -6,7 +6,7 @@
 
 #define ARRAY_SIZE(a) sizeof(a)/sizeof(a[0]) 
 #define CHAR_TO_INDEX(c) ((int)c - (int)'a')
-bool prefix=true;
+
 struct Node ////node
 { 
 	struct Node *children[26];///alphabet size  
@@ -51,32 +51,10 @@ void insert(struct Node *root, const char *key)
 	temp->isEndOfWord = true; ///end of a stored word 
 }
 
-
-bool search(struct Node *root, const char *key) 
-{ 
-	int level; 
-	int length = strlen(key); 
-	int index; 
-	struct Node *pCrawl = root; 
-
-	for (level = 0; level < length; level++) 
-	{ 
-		index = CHAR_TO_INDEX(key[level]); 
-
-		if (!pCrawl->children[index]) 
-			return false; 
-
-		pCrawl = pCrawl->children[index]; 
-	} 
-
-	return (pCrawl != NULL && pCrawl->isEndOfWord); 
-}
-
 void treeTraverse(struct Node* node, char* arr){
-	if(prefix){
-		printf("%s",arr);
-		prefix = false;
-	}
+
+	char k[100]={0};
+	char a[2]={0};
 	struct Node * current = node;
 	bool isNull = true;
 	int i;
@@ -85,26 +63,29 @@ void treeTraverse(struct Node* node, char* arr){
 			isNull = false;//if at least one child si
 		}
 	}
-	if(isNull && !prefix){
-		printf("\n");
+	if(current->isEndOfWord&&!isNull){
 		printf("%s",arr);
+		printf("\n");
+	}
+
+	if(isNull){
+		
+		printf("%s",arr);
+		printf("\n");
 		return;
 	}
 
 	int j;
 	for(j=0;j<26;j++){
 		if(current->children[j] != NULL){
-			printf("%c",'a'+j);		
-			treeTraverse(current->children[j],arr);
+			
+			strcpy(k,arr);
+			a[0]=j+'a';
+			a[1]='\0';
+			strcat(k,a);		
+			treeTraverse(current->children[j],k);
 		}
 	}
-
-}
-
-bool isword(struct Node * root){
-
-	return root->isEndOfWord!=false;
-
 
 }
 
@@ -129,16 +110,6 @@ int printSuggestions(struct Node* node, char* arr){
 }
 
 
- 
-
- 
-
- 
-
-
-
-
-
 int main(){
  
 char keys[][9] = {"the", "tag", "apple", "they", "aim","by", "bye", "their","come"}; 
@@ -148,10 +119,8 @@ int i;
 for (i = 0; i < ARRAY_SIZE(keys); i++) 
 		insert(root, keys[i]); 
 
-
-//printf("%s --- %s\n", "the", output[search(root, "the")] );
-//printf("Number of word : %d",wordCount(root));
 printSuggestions(root,"t");
+
 	
 
 return 0;
