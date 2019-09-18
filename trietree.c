@@ -101,6 +101,13 @@ void treeTraverse(struct Node* node, char* arr){
 
 }
 
+bool isword(struct Node * root){
+
+	return root->isEndOfWord!=false;
+
+
+}
+
 
 
 int printSuggestions(struct Node* node, char* arr){
