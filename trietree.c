@@ -37,9 +37,10 @@ void insert(struct Node *root, const char *key)
 	int index; 
 
 	struct Node *temp = root; 
+	//printf("%ld",strlen(key));
+	for (int i = 0; i < strlen(key)-2; i++) 
+	{   
 
-	for (int i = 0; i < strlen(key); i++) 
-	{ 
 		index = CHAR_TO_INDEX(key[i]); 
 		if (!temp->children[index]) 
 			temp->children[index] = createNode(); 
@@ -113,13 +114,32 @@ int printSuggestions(struct Node* node, char* arr){
 int main(){
  
 char keys[][9] = {"the", "tag", "apple", "they", "aim","by", "bye", "their","come"}; 
-char output[][32] = {"Not present in trie", "Present in trie"};
+//char output[][32] = {"Not present in trie", "Present in trie"};
 struct Node *root = createNode(); 
-int i; 
-for (i = 0; i < ARRAY_SIZE(keys); i++) 
-		insert(root, keys[i]); 
+ 
+//for (int i = 0; i < ARRAY_SIZE(keys); i++) 
+		// insert(root,keys[i]);
 
-printSuggestions(root,"t");
+	FILE *fp;
+	char str[100];
+	fp=fopen("wordlist1000.txt","r");///open txt file
+	if(fp==NULL){
+		printf("could not open the file");
+		return 1;
+	}
+
+	while(fgets(str,100,fp)!=NULL){
+		//printf("%s",str);
+		insert(root,str); ///insert into tree
+	}
+	fclose(fp);
+
+	printf("Enter a word :");
+	char prefix[100];
+	scanf("%s",prefix);
+	
+	printf("suggetions...\n");
+	printSuggestions(root,prefix);
 
 	
 
