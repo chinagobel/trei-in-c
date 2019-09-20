@@ -2,7 +2,7 @@
 #include <stdlib.h> 
 #include <string.h> 
 #include <stdbool.h> 
-
+#include <time.h>
 
 #define ARRAY_SIZE(a) sizeof(a)/sizeof(a[0]) 
 #define CHAR_TO_INDEX(c) ((int)c - (int)'a')
@@ -110,15 +110,39 @@ int printSuggestions(struct Node* node, char* arr){
 	return 0;
 }
 
+int count(struct Node* root){ ///count the number of nodes
+  int numberofnodes=0;
+  
+  for(int i=0;i<26;i++){
+  	if(root->children[i]!=NULL){
+  		break;
+  	}
+  }
+  numberofnodes++;
+
+
+  for(int i=0;i<26;i++){
+  	if(root->children[i]!=NULL){
+  		
+  		numberofnodes+=count(root->children[i]);
+  	}
+  }
+
+  return numberofnodes;
+
+}
+
 
 int main(){
  
-char keys[][9] = {"the", "tag", "apple", "they", "aim","by", "bye", "their","come"}; 
+//char keys[][1] = {"the"}; 
 //char output[][32] = {"Not present in trie", "Present in trie"};
 struct Node *root = createNode(); 
  
 //for (int i = 0; i < ARRAY_SIZE(keys); i++) 
-		// insert(root,keys[i]);
+		//insert(root,"t");
+		//insert(root,"b");
+//printf("number of node :%d",count(root));
 
 	FILE *fp;
 	char str[100];
@@ -128,10 +152,18 @@ struct Node *root = createNode();
 		return 1;
 	}
 
+
+	double time_spentinsert=0.0,time_spentsugges=0.0;
+    clock_t begin=clock();
+	
 	while(fgets(str,100,fp)!=NULL){
 		//printf("%s",str);
 		insert(root,str); ///insert into tree
 	}
+	clock_t end=clock();
+	time_spentinsert+=(double)(end-begin)/CLOCKS_PER_SEC;
+
+
 	fclose(fp);
 
 	printf("Enter a word :");
@@ -139,9 +171,23 @@ struct Node *root = createNode();
 	scanf("%s",prefix);
 	
 	printf("suggetions...\n");
+
+	clock_t begin2=clock();
+
 	printSuggestions(root,prefix);
 
-	
+	clock_t end2=clock();
+	time_spentsugges+=(double)(end2-begin2)/CLOCKS_PER_SEC;
+
+
+	//////caculate the memory usage
+	long int nodesize=sizeof(struct Node);
+
+	long int memsize=nodesize*count(root);
+
+	printf("insertion time  :%f second \n",time_spentinsert);
+	printf("suggestion time :%f second \n",time_spentsugges);
+	printf("memory usage :%ld bytes \n",memsize);
 
 return 0;
 
